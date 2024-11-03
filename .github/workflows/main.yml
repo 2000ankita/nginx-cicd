@@ -1,35 +1,28 @@
-name: Build and Push Docker Image
+name: Deploy Nginx to Kubernetes
 
 on:
   push:
     branches:
-      - main  # Run workflow on push to main branch
-  workflow_dispatch:  # Allow manual triggering of workflow
+      - main  # Trigger on pushes to the main branch
 
 jobs:
-  build-and-push:
+  build:
+    name: Build and Push Docker Image
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Set up Google Cloud SDK
-        uses: google-github-actions/setup-gcloud@v1
-        with:
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
-          project_id: ${{ secrets.GCP_PROJECT_ID }}
+    - name: Log in to Google Container Registry
+      uses: docker/login-action@v2
+      with:
+        registry: gcr.io
+        username: _json_key
+        password: ${{ secrets.GCR_JSON_KEY }}
 
-      - name: Authenticate Docker with GCR
-        run: |
-          echo "${{ secrets.GCP_SA_KEY }}" | docker login -u _json_key --password-stdin https://gcr.io
+    - name: Build Docker image
+      run: docker build -t gcr.io/YOUR_PROJECT_ID/nginx:latest .
 
-      - name: Build Docker image
-        run: |
-          IMAGE_TAG=gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.IMAGE_NAME }}:${{ github.sha }}
-          docker build -t $IMAGE_TAG .
-
-      - name: Push Docker image to GCR
-        run: |
-          IMAGE_TAG=gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.IMAGE_NAME }}:${{ github.sha }}
-          docker push $IMAGE_TAG
+    - name: Push Docker image
+      run: docker push gcr.io/YOUR_PROJECT_ID/nginx:latest
