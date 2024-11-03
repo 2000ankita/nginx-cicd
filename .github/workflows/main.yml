@@ -22,7 +22,7 @@ jobs:
         with:
           registry: gcr.io
           username: _json_key
-          password: ${{ secrets.GCR_JSON_KEY }}
+          password: ${{ secrets.GCR }}
 
       - name: Build Docker image
         run: docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/nginx:latest .
