@@ -22,7 +22,6 @@ jobs:
         password: ${{ secrets.GCR_JSON_KEY }}
 
     - name: Build Docker image
-      run: docker build -t gcr.io/YOUR_PROJECT_ID/nginx:latest .
-
+      run: docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/nginx:latest .
     - name: Push Docker image
-      run: docker push gcr.io/YOUR_PROJECT_ID/nginx:latest
+      run: docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/nginx:latest
