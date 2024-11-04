@@ -24,21 +24,14 @@ jobs:
           username: _json_key
           password: ${{ secrets.GCR }}
 
-      - name: Set version
-        id: vars
-        run: echo "VERSION=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
+      - name: Build Docker image with 'latest' tag
+        run: docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/nginx:latest .
 
-      - name: Build Docker image
-        run: docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/nginx:${{ env.VERSION }} .
-
-      - name: Push Docker image
-        run: docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/nginx:${{ env.VERSION }}
+      - name: Push Docker image with 'latest' tag
+        run: docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/nginx:latest
       
-      - name: Update Kubernetes manifest with new image version
+      - name: Update Kubernetes manifest to use 'latest' tag
         run: |
-          sed -i "s|image: gcr.io/${GCP_PROJECT_ID}/nginx:.*|image: gcr.io/${GCP_PROJECT_ID}/nginx:${{ env.VERSION }}|g" k8s/nginx-deployment.yaml
+          sed -i "s|image: gcr.io/${GCP_PROJECT_ID}/nginx:.*|image: gcr.io/${GCP_PROJECT_ID}/nginx:latest|g" k8s/nginx-deployment.yaml
           echo "Updated manifest content:"
           cat k8s/nginx-deployment.yaml
-
-
-
