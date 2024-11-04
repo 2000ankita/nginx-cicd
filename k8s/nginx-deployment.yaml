@@ -1,0 +1,21 @@
+# k8s/nginx-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  namespace: default  # or your specific namespace
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: gcr.io/${GCP_PROJECT_ID}/nginx:${VERSION}  # Image with version tag
+          ports:
+            - containerPort: 80
