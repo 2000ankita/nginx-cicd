@@ -33,3 +33,13 @@ jobs:
 
       - name: Push Docker image
         run: docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/nginx:${{ env.VERSION }}
+      
+      - name: Update Kubernetes manifest with new image version
+        run: |
+          sed -i "s|\${VERSION}|${{ env.VERSION }}|g" k8s/nginx-deployment.yaml
+          git config --global user.email "ankitasvakil@gmail.com"
+          git config --global user.name "Asv"
+          git add k8s/nginx-deployment.yaml
+          git commit -m "Update Nginx image version to ${{ env.VERSION }}"
+          git push
+
