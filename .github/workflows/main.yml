@@ -36,11 +36,9 @@ jobs:
       
       - name: Update Kubernetes manifest with new image version
         run: |
-          sed -i "s|image: gcr.io/${{ secrets.GCP_PROJECT_ID }}/nginx:.*|image: gcr.io/${{ secrets.GCP_PROJECT_ID }}/nginx:${{ env.VERSION }}|g" k8s/nginx-deployment.yaml
-          git config --global user.email "your-email@example.com"  # Replace with your email
-          git config --global user.name "Your Name"                # Replace with your name
-          git add k8s/nginx-deployment.yaml
-          git commit -m "Update Nginx image version to ${{ env.VERSION }}"
-          git push https://${{ secrets.GH_TOKEN }}@github.com/2000ankita/nginx-cicd.git HEAD:main
+          sed -i "s|image: gcr.io/${GCP_PROJECT_ID}/nginx:.*|image: gcr.io/${GCP_PROJECT_ID}/nginx:${{ env.VERSION }}|g" k8s/nginx-deployment.yaml
+          echo "Updated manifest content:"
+          cat k8s/nginx-deployment.yaml
+
 
 
