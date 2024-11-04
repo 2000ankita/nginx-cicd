@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
         - name: nginx
-          image: gcr.io/${GCP_PROJECT_ID}/nginx:${VERSION}  # Image with version tag
+          image: image: gcr.io/prime-dogfish-440408-r6/nginx:latest  # Image with version tag
           ports:
             - containerPort: 80
